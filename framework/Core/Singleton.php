@@ -9,16 +9,19 @@
 namespace Superkoh\Core;
 
 
-class Singleton {
+class Singleton
+{
     private static $instanceStack = [];
 
-    protected function __construct() {
+    protected function __construct()
+    {
     }
 
     /**
      * @return $this
      */
-    final public static function getInstance() {
+    final public static function getInstance()
+    {
         $class = get_called_class();
         if (!isset(self::$instanceStack[$class])) {
             self::$instanceStack[$class] = new $class();
@@ -26,6 +29,7 @@ class Singleton {
         return self::$instanceStack[$class];
     }
 
-    final private function __clone() {
+    final private function __clone()
+    {
     }
 }

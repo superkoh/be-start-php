@@ -9,8 +9,6 @@
 namespace Superkoh\Core;
 
 
-use App\Controller\IndexController;
-
 class Factory
 {
     private static $componentStack = [];

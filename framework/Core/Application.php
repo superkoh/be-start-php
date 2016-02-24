@@ -9,7 +9,8 @@
 namespace Superkoh\Core;
 
 
-abstract class Application extends Singleton {
+abstract class Application extends Singleton
+{
 
     /**
      * Application config
@@ -21,16 +22,18 @@ abstract class Application extends Singleton {
 
     abstract public function stop();
 
+    public function getConfig():array
+    {
+        return $this->config;
+    }
+
     /**
      * @param array $config
      * @return $this
      */
-    public function setConfig(array $config) {
+    public function setConfig(array $config)
+    {
         $this->config = $config;
         return $this;
-    }
-
-    public function getConfig():array {
-        return $this->config;
     }
 }

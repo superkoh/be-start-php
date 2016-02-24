@@ -24,19 +24,23 @@ if (!empty($config['phpIncludePath'])) {
 }
 
 // setting time zone
-if (!empty($config['dateDefaultTimezone']))
+if (!empty($config['dateDefaultTimezone'])) {
     date_default_timezone_set($config['dateDefaultTimezone']);
+}
 
 // register autoload
 spl_autoload_register(function ($class) use ($config) {
-    if (strpos($class, 'Superkoh\\') === 0)
+    if (strpos($class, 'Superkoh\\') === 0) {
         @include __DIR__ . '/' . str_replace('\\', '/', substr($class, 9)) . '.php';
-    elseif (!empty($config['namespaceMapping'])) {
-        foreach ($config['namespaceMapping'] as $prefix => $folder)
-            if (strpos($class, $prefix) === 0)
+    } elseif (!empty($config['namespaceMapping'])) {
+        foreach ($config['namespaceMapping'] as $prefix => $folder) {
+            if (strpos($class, $prefix) === 0) {
                 @include APP_ROOT . $folder . '/' . str_replace('\\', '/', substr($class, strlen($prefix))) . '.php';
-    } else
+            }
+        }
+    } else {
         @include $class . '.php';
+    }
 });
 
 return $config;

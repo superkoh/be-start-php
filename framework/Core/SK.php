@@ -9,6 +9,7 @@
 namespace Superkoh\Core;
 
 
-class SK extends Factory {
+class SK extends Factory
+{
 
 }
