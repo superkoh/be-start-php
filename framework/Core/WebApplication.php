@@ -9,23 +9,52 @@
 namespace Superkoh\Core;
 
 
-use Superkoh\Traits\Singleton;
+use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Request;
 use Zend\Diactoros\ServerRequestFactory;
 
 class WebApplication extends Application
 {
-    use Singleton;
+    /**
+     * @var WebApplication
+     */
+    private static $instance;
+
 
     /**
-     * @var Request
+     * @var ServerRequestInterface
      */
     private $request;
 
+
+    /**
+     * @return WebApplication
+     */
+    public static function getInstance()
+    {
+        return self::$instance;
+    }
+
+    /**
+     * WebApplication constructor.
+     * @param array $config
+     */
     public function __construct(array $config)
     {
-        $this->setConfig($config);
+        if (isset(self::$instance)) {
+            throw new \RuntimeException("application is already running");
+        }
+        parent::__construct($config);
         $this->request = ServerRequestFactory::fromGlobals();
+        self::$instance = $this;
+    }
+
+    /**
+     * @return ServerRequestInterface
+     */
+    public function getRequest()
+    {
+        return $this->request;
     }
 
     public function run()
@@ -33,7 +62,7 @@ class WebApplication extends Application
         //echo phpinfo();
         // TODO: Implement run() method.
         print_r($this->request->getHeader('User-Agent'));
-        SK::log()->addInfo($this->request->getHeaderLine('User-Agent'));
+        SK::logger()->info($this->request->getHeaderLine('User-Agent'));
         //echo $_SERVER['REQUEST_URI'];
         //echo phpinfo();
     }
@@ -42,4 +71,6 @@ class WebApplication extends Application
     {
         // TODO: Implement stop() method.
     }
+
+
 }

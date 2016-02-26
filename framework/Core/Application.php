@@ -18,6 +18,16 @@ abstract class Application
      */
     private $config;
 
+    /**
+     * @var array
+     */
+    private $components = [];
+
+    public function __construct(array $config)
+    {
+        $this->config = $config;
+    }
+
     abstract public function run();
 
     abstract public function stop();
@@ -28,10 +38,21 @@ abstract class Application
     }
 
     /**
-     * @param array $config
+     * @param $key
+     * @return mixed
      */
-    public function setConfig(array $config)
+    public function getComponent($key)
     {
-        $this->config = $config;
+        if (!isset($this->components[$key])) {
+            if (empty($this->config['components']) || empty($this->config['components'][$key])) {
+                throw new \InvalidArgumentException('components ' . $key . ' not found');
+            }
+            $ref = new \ReflectionClass($this->config['components'][$key]['class']);
+            /** @var ComponentFactory $factory */
+            $factory = $ref->newInstanceWithoutConstructor();
+            $this->components[$key] = $factory->create($key, $this->config['components'][$key]['settings']);
+        }
+        return $this->components[$key];
     }
+
 }

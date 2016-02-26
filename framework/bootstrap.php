@@ -8,6 +8,19 @@
 
 use Superkoh\Core\SK;
 
+// register autoload
+spl_autoload_register(function ($class) {
+    if (strpos($class, 'Superkoh\\') === 0) {
+        @include __DIR__ . '/' . str_replace('\\', '/', substr($class, 9)) . '.php';
+    } elseif (strpos($class, 'App\\') === 0) {
+        @include APP_ROOT . '/' . str_replace('\\', '/', substr($class, 4)) . '.php';
+    } else {
+        @include $class . '.php';
+    }
+});
+
+include __DIR__ . '/../vendor/autoload.php';
+
 define('APP_ROOT', __DIR__ . '/../application');
 $config = include APP_ROOT . '/configs/app.config.php';
 
@@ -24,35 +37,18 @@ if (!empty($config['dateDefaultTimezone'])) {
 }
 
 // setting php include path
-set_include_path(get_include_path()
-    . PATH_SEPARATOR . __DIR__
-    . PATH_SEPARATOR . APP_ROOT . '/controllers'
-    . PATH_SEPARATOR . APP_ROOT . '/actions'
-    . PATH_SEPARATOR . APP_ROOT . '/models'
-    . PATH_SEPARATOR . APP_ROOT . '/components'
-);
-if (!empty($config['phpIncludePath'])) {
-    set_include_path(get_include_path() . PATH_SEPARATOR
-        . implode(PATH_SEPARATOR, $config['phpIncludePath'])
-    );
-}
-
-// register autoload
-spl_autoload_register(function ($class) use ($config) {
-    if (strpos($class, 'Superkoh\\') === 0) {
-        @include __DIR__ . '/' . str_replace('\\', '/', substr($class, 9)) . '.php';
-    } elseif (!empty($config['namespaceMapping'])) {
-        foreach ($config['namespaceMapping'] as $prefix => $folder) {
-            if (strpos($class, $prefix) === 0) {
-                @include APP_ROOT . $folder . '/' . str_replace('\\', '/', substr($class, strlen($prefix))) . '.php';
-            }
-        }
-    } else {
-        @include $class . '.php';
-    }
-});
-
-include __DIR__ . '/../vendor/autoload.php';
+//set_include_path(get_include_path()
+//    . PATH_SEPARATOR . __DIR__
+//    . PATH_SEPARATOR . APP_ROOT . '/controllers'
+//    . PATH_SEPARATOR . APP_ROOT . '/actions'
+//    . PATH_SEPARATOR . APP_ROOT . '/models'
+//    . PATH_SEPARATOR . APP_ROOT . '/components'
+//);
+//if (!empty($config['phpIncludePath'])) {
+//    set_include_path(get_include_path() . PATH_SEPARATOR
+//        . implode(PATH_SEPARATOR, $config['phpIncludePath'])
+//    );
+//}
 
 register_shutdown_function(function(){
     $error = error_get_last();
@@ -60,14 +56,14 @@ register_shutdown_function(function(){
     $ignore = E_WARNING | E_NOTICE | E_USER_WARNING | E_USER_NOTICE | E_STRICT | E_DEPRECATED | E_USER_DEPRECATED;
     if (($error['type'] & $ignore) == 0) {
         // TODO:
-        SK::log('err')->addError(print_r($error, true));
+        SK::logger('err')->error(print_r($error, true));
         die;
     }
 });
 
 set_exception_handler(function($e){
     // TODO:
-    SK::log('err')->addError(print_r($e, true));
+    SK::logger('err')->error(print_r($e, true));
 });
 
 return $config;
