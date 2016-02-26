@@ -9,7 +9,7 @@
 namespace Superkoh\Core;
 
 
-abstract class Application extends Singleton
+abstract class Application
 {
 
     /**
@@ -29,11 +29,9 @@ abstract class Application extends Singleton
 
     /**
      * @param array $config
-     * @return $this
      */
     public function setConfig(array $config)
     {
         $this->config = $config;
-        return $this;
     }
 }

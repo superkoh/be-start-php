@@ -43,4 +43,6 @@ spl_autoload_register(function ($class) use ($config) {
     }
 });
 
+include __DIR__ . '/../vendor/autoload.php';
+
 return $config;

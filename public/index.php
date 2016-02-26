@@ -5,7 +5,8 @@
  * Date: 16/2/24
  * Time: 下午6:05
  */
-use Superkoh\Core\WebApplication;
+use Superkoh\Core\SK;
 
+error_reporting(E_ALL);
 $config = include '../framework/bootstrap.php';
-$app = WebApplication::getInstance()->setConfig($config)->run();
+SK::app($config)->run();
