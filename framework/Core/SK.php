@@ -8,6 +8,7 @@
 
 namespace Superkoh\Core;
 
+use Monolog\Logger;
 
 class SK
 {
@@ -16,6 +17,16 @@ class SK
      * @var WebApplication
      */
     private static $app;
+
+    /**
+     * @var Logger[]
+     */
+    private static $logContainer = [];
+
+    /**
+     * @var array
+     */
+    private static $logConfig;
 
     /**
      * @param array|null $config
@@ -33,6 +44,27 @@ class SK
             self::$app->setConfig($config);
         }
         return self::$app;
+    }
+
+    /**
+     * @param string $key
+     * @return Logger
+     */
+    public static function log(string $key = 'default')
+    {
+        if (!isset(self::$logConfig)) {
+            self::$logConfig = include APP_ROOT . '/configs/log.config.php';
+        }
+        if (!isset(self::$logContainer[$key])) {
+            if (empty(self::$logConfig[$key])) {
+                throw new \InvalidArgumentException('config for ' . $key . ' can not be found');
+            }
+            self::$logContainer[$key] = new Logger($key);
+            $ref = new \ReflectionClass('\\Monolog\\Handler\\' . self::$logConfig[$key]['handler']);
+            $handler = $ref->newInstanceArgs(self::$logConfig[$key]['settings']);
+            self::$logContainer[$key]->pushHandler($handler);
+        }
+        return self::$logContainer[$key];
     }
 
 }

@@ -6,8 +6,22 @@
  * Time: 下午6:05
  */
 
+use Superkoh\Core\SK;
+
 define('APP_ROOT', __DIR__ . '/../application');
 $config = include APP_ROOT . '/configs/app.config.php';
+
+// setting error reporting level
+if (!empty($config['errorReporting'])) {
+    error_reporting($config['errorReporting']);
+} else {
+    error_reporting(E_ALL);
+}
+
+// setting time zone
+if (!empty($config['dateDefaultTimezone'])) {
+    date_default_timezone_set($config['dateDefaultTimezone']);
+}
 
 // setting php include path
 set_include_path(get_include_path()
@@ -21,11 +35,6 @@ if (!empty($config['phpIncludePath'])) {
     set_include_path(get_include_path() . PATH_SEPARATOR
         . implode(PATH_SEPARATOR, $config['phpIncludePath'])
     );
-}
-
-// setting time zone
-if (!empty($config['dateDefaultTimezone'])) {
-    date_default_timezone_set($config['dateDefaultTimezone']);
 }
 
 // register autoload
@@ -44,5 +53,21 @@ spl_autoload_register(function ($class) use ($config) {
 });
 
 include __DIR__ . '/../vendor/autoload.php';
+
+register_shutdown_function(function(){
+    $error = error_get_last();
+    if (empty($error)) return;
+    $ignore = E_WARNING | E_NOTICE | E_USER_WARNING | E_USER_NOTICE | E_STRICT | E_DEPRECATED | E_USER_DEPRECATED;
+    if (($error['type'] & $ignore) == 0) {
+        // TODO:
+        SK::log('err')->addError(print_r($error, true));
+        die;
+    }
+});
+
+set_exception_handler(function($e){
+    // TODO:
+    SK::log('err')->addError(print_r($e, true));
+});
 
 return $config;

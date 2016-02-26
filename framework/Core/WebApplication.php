@@ -33,6 +33,7 @@ class WebApplication extends Application
         //echo phpinfo();
         // TODO: Implement run() method.
         print_r($this->request->getHeader('User-Agent'));
+        SK::log()->addInfo($this->request->getHeaderLine('User-Agent'));
         //echo $_SERVER['REQUEST_URI'];
         //echo phpinfo();
     }

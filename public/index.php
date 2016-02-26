@@ -7,6 +7,5 @@
  */
 use Superkoh\Core\SK;
 
-error_reporting(E_ALL);
 $config = include '../framework/bootstrap.php';
 SK::app($config)->run();

@@ -2,6 +2,7 @@
   "require": {
     "mobiledetect/mobiledetectlib": "2.8.19",
     "psr/http-message": "1.0",
-    "zendframework/zend-diactoros": "1.3.3"
+    "zendframework/zend-diactoros": "1.3.3",
+    "monolog/monolog": "1.17.2"
   }
 }
